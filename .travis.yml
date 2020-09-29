@@ -17,10 +17,7 @@ before_script:
   - bundle exec rails webpacker:compile
 script:
   - xvfb-run -a --server-args="-screen 0 1024x768x24" bundle exec rake
-  - bundle install — jobs=3 — retry=3
-  - bundle exec rake db:create
-  - bundle exec rake db:migrate
-  - bundle exec rspec
+  #- bundle exec rspec
   - bundle exec rubocop --require rubocop-rails
 services:
   - postgresql
