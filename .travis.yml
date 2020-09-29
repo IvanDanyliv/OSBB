@@ -1,0 +1,33 @@
+dist: xenial
+cache:
+  bundler: true
+  yarn: true
+language: ruby
+rvm:
+- 2.7.1
+- jruby-19mode
+- rbx-2
+env:
+  global:
+    - RAILS_ENV=test
+    - MOZ_HEADLESS=1
+install:
+  - travis_retry nvm install 13.5.0
+  - bundle
+  - yarn
+before_script:
+  - cp config/database.yml.travis config/database.yml
+  - rake db:setup
+  - bundle exec rails webpacker:compile
+script:
+  - xvfb-run -a --server-args="-screen 0 1024x768x24" bundle exec rake
+  - bundle install — jobs=3 — retry=3
+  - bundle exec rake db:create
+  - bundle exec rake db:migrate
+  - bundle exec rspec
+  - bundle exec rubocop --require rubocop-rails
+services:
+  - postgresql
+  - xvfb
+addons:
+  firefox: latest
